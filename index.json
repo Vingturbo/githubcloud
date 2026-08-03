@@ -27,6 +27,13 @@
       "volume": false,
       "upload_time": 1785740364328,
       "sha256": "bb03a73597550a12efcb2daf5835130df36c1136146a623ec29aa08a153a1dec"
+    },
+    {
+      "name": "githubcloud.py",
+      "size": 21456,
+      "volume": false,
+      "upload_time": 1785744937374,
+      "sha256": "8dfacbd24017bec855116f9c8109d111de82bbd40d0c0fa96e5ad3bcb7985f82"
     }
   ]
 }
