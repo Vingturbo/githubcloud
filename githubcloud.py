@@ -32,7 +32,7 @@ session.verify = False
 # ═══════════════════════════════════════════════════════════════
 
 # ═══════════════════ 全局配置（修改此处） ═══════════════════
-GITHUB_TOKEN = "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"          # GitHub 个人访问令牌
+GITHUB_TOKEN = "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"          # GitHub 个人访问令牌
 GITHUB_OWNER = "Vingturbo"                 # 仓库所有者
 GITHUB_REPO  = "githubcloud"               # 仓库名
 RELEASE_TAG  = "files"                     # 默认 Release 标签
