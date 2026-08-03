@@ -48,6 +48,13 @@
       "volume": false,
       "upload_time": 1785745391062,
       "sha256": "14b3e9a710a3fcf0bd9b55ab6b60412bd91227563f813fc49040cabc0209e0bd"
+    },
+    {
+      "name": "DevSidecar-2.2.0-windows-x86_64.exe",
+      "size": 122596859,
+      "volume": false,
+      "upload_time": 1785745572535,
+      "sha256": "7cc103306019d2684a9e07c9609ad6e0dccfcf75d953d7a69a8ec95c26669e03"
     }
   ]
 }
