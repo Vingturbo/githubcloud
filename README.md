@@ -1,5 +1,7 @@
 # GitHubCloud - 基于GitHub Release的在线文件存储
 
+要正常使用，请下载Releases中的githubcloud.py
+
 ## We follow the GPLv3 license, so please don't use the GitHub API for anything shady.
 ## 我们遵循GPLv3协议，请不要使用GitHubAPI为非作歹
 
