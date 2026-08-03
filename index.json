@@ -41,6 +41,13 @@
       "volume": false,
       "upload_time": 1785745327741,
       "sha256": "a948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447"
+    },
+    {
+      "name": "python-3.14.6-amd64.exe",
+      "size": 30774112,
+      "volume": false,
+      "upload_time": 1785745391062,
+      "sha256": "14b3e9a710a3fcf0bd9b55ab6b60412bd91227563f813fc49040cabc0209e0bd"
     }
   ]
 }
