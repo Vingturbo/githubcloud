@@ -55,6 +55,13 @@
       "volume": false,
       "upload_time": 1785745572535,
       "sha256": "7cc103306019d2684a9e07c9609ad6e0dccfcf75d953d7a69a8ec95c26669e03"
+    },
+    {
+      "name": "archlinux-2026.07.01-x86_64.iso",
+      "size": 1583022080,
+      "volume": false,
+      "upload_time": 1785747924721,
+      "sha256": "e86295dc0bdf9b85a5a9256810c553239689d2ae8e80eeec81b4e2e910d8a6c0"
     }
   ]
 }
