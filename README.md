@@ -1,5 +1,8 @@
 # GitHubCloud - 基于GitHub Release的在线文件存储
 
+## We follow the GPLv3 license, so please don't use the GitHub API for anything shady.
+## 我们遵循GPLv3协议，请不要使用GitHubAPI为非作歹
+
 **GitHubCloud** is a command-line tool for managing files via **GitHub Releases**. It supports uploading, downloading (with automatic 7‑zip volume splitting for files larger than 2 GiB), searching, and a multilingual help system. All file metadata is stored in an `index.json` file that lives in your GitHub repository, so your file list stays synchronized across devices.
 
 **GitHubCloud** 是一个基于 **GitHub Releases** 的文件管理命令行工具。支持上传、下载（大于 2 GiB 的文件自动 7z 分卷）、搜索，以及多语言帮助系统。所有文件的元数据存储在仓库中的 `index.json` 里，多端同步，随时获取最新文件列表。
