@@ -76,6 +76,13 @@
       "volume": false,
       "upload_time": 1786456160456,
       "sha256": "ca4cee95af60fe7558b3f500362f09c76ab7498961f085a60f70cd958177fd92"
+    },
+    {
+      "name": "Turing_Complete-2.1.296.tar.gz",
+      "size": 249825324,
+      "volume": false,
+      "upload_time": 1786457400216,
+      "sha256": "ca4cee95af60fe7558b3f500362f09c76ab7498961f085a60f70cd958177fd92"
     }
   ]
 }
