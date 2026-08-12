@@ -83,6 +83,13 @@
       "volume": false,
       "upload_time": 1786457400216,
       "sha256": "ca4cee95af60fe7558b3f500362f09c76ab7498961f085a60f70cd958177fd92"
+    },
+    {
+      "name": "image.tar.zst",
+      "size": 2145475591,
+      "volume": false,
+      "upload_time": 1786499975645,
+      "sha256": "6cef2d086e2d1bd4caff7ecc196ffa33188a8235be21e8ab3d5b35b88671714f"
     }
   ]
 }
