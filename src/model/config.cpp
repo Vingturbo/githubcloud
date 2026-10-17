@@ -1,8 +1,8 @@
 #include "config.hpp"
 #include <iostream>
-#include <iomanip> // 用于格式化输出
+#include <iomanip>
+#include <sstream>
 
-// 真正的全局定义
 std::map<std::string, std::string> g_config;
 
 namespace config {
@@ -23,9 +23,19 @@ namespace config {
     }
     
     void print_all() {
-        // 按照 .ksv 格式打印
         for (const auto& [key, value] : g_config) {
             std::cout << key << " " << value << "\n";
+        }
+    }
+
+    void parse_ksv_string(const std::string& content) {
+        std::istringstream stream(content);
+        std::string line;
+        while (std::getline(stream, line)) {
+            if (line.empty()) continue;
+            if (line[0] == '#') continue;
+            if (line[32]!=' ') continue;
+            set(line.substr(0, 32), line.substr(33));
         }
     }
 }

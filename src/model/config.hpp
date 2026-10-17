@@ -18,4 +18,5 @@ namespace config {
     
     // 打印所有已注册的配置（给你的 -Op @@enable_config 用的）
     void print_all();
+    void parse_ksv_string(const std::string& content);
 }
