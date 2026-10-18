@@ -1,5 +1,6 @@
 #include "cli.hpp"
 #include "config.hpp"
+#include "util.hpp"
 #include <iostream>
 #include <vector>
 #include <map>
