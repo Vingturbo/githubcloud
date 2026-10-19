@@ -1,3 +1,4 @@
+#include "init.hpp"
 #include "cli.hpp"
 #include "config.hpp"
 #include "util.hpp"
@@ -5,8 +6,35 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <string_view>
 
-std::map<std::string, std::string> options_label;
+std::map<std::string, std::string> options_label = {
+    // 开关类
+    {"I", "internet"},
+    {"L", "local"},
+    {"C", "config"},
+    {"S", "share"},
+    {"O", "other"},
+    {"V", "version"},
+    // 主开关
+    {"p", "password"},
+    {"u", "upload"},
+    {"d", "download"},
+    {"s", "search"},
+    {"v", "view"},
+    {"b", "build"},
+    {"f", "fetch"},
+    {"h", "help"},
+    {"m", "my-config-set"},
+    {"g", "global-config-set"},
+    // 修饰开关
+    {"c", "complete"},
+    {"o", "out"},
+    {"p", "password"},
+    {"n", "name"},
+    // 即时开关
+    {"i", "include-online-config"},
+    {"j", "jump_conig"}};
 std::vector<std::string> options;
 std::vector<std::string> arguments;
 
@@ -44,7 +72,12 @@ void cli_main(int argc, char *argv[])
                 // 短开关组合 -Ido -> I, d, o
                 for (size_t j = 1; j < arg.size(); j++)
                 {
-                    options.push_back(std::string(1, arg[j]));
+                    if (options_label.count(std::string(1, arg[j])) == 0)
+                    {
+                        util::message_out("1d510a311320bb3fb97abff44530c9d9");
+                        return;
+                    }
+                    options.push_back(options_label[std::string(1, arg[j])]);
                 }
             }
         }

@@ -3,6 +3,7 @@
 #include <map>
 #include <cstdio>
 #include <iostream>
+#include "config.hpp"
 
 // 如果 Windows 下需要
 #ifdef _WIN32
@@ -17,7 +18,7 @@ namespace util
     {
         std::string result;
         char buffer[128];
-        
+
         FILE *pipe = popen(cmd.c_str(), "r");
         if (!pipe)
             return "";
@@ -69,5 +70,10 @@ namespace util
 
         // 3. 如果写了单 @ 之类的奇怪东西，原样返回，让它去后面报错
         return "";
+    }
+
+    void message_out(const std::string &message_id)
+    {
+        std::cerr << util::resolve_value(config::get(message_id)) << std::endl;
     }
 }

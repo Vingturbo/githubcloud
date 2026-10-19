@@ -24,7 +24,7 @@ namespace config {
     
     void print_all() {
         for (const auto& [key, value] : g_config) {
-            std::cout << key << " " << value << "\n";
+            std::cerr << key << " " << value << "\n";
         }
     }
 
@@ -35,6 +35,7 @@ namespace config {
             if (line.empty()) continue;
             if (line[0] == '#') continue;
             if (line[32]!=' ') continue;
+            if (line[33]!='@') continue;
             set(line.substr(0, 32), line.substr(33));
         }
     }
