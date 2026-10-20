@@ -52,20 +52,28 @@ namespace util
             // @@ 字面量，直接切掉前两个字符
             return raw_val.substr(2);
         }
-        else if (raw_val[1] == '_')
+        else
         {
-            // @_ 每次执行
-            return exec_command(raw_val.substr(2));
-        }
-        else if (raw_val[1] == '!')
-        {
-            std::string cmd = raw_val.substr(2);
-
-            if (bang_cache.count(cmd) == 0)
+            if (config::get("91de27d37ac04464d4f8fd53afd0c2bc") != "yes")
             {
-                bang_cache[cmd] = exec_command(cmd);
+                util::message_out("8a94c5bae8543a47fb0b5dcdc86240e4");
+                return "";
             }
-            return bang_cache[cmd];
+            if (raw_val[1] == '_')
+            {
+                // @_ 每次执行
+                return exec_command(raw_val.substr(2));
+            }
+            else if (raw_val[1] == '!')
+            {
+                std::string cmd = raw_val.substr(2);
+
+                if (bang_cache.count(cmd) == 0)
+                {
+                    bang_cache[cmd] = exec_command(cmd);
+                }
+                return bang_cache[cmd];
+            }
         }
 
         // 3. 如果写了单 @ 之类的奇怪东西，原样返回，让它去后面报错
@@ -74,6 +82,6 @@ namespace util
 
     void message_out(const std::string &message_id)
     {
-        std::cerr << util::resolve_value(config::get(message_id)) << std::endl;
+        std::cerr << util::resolve_value(config::get(message_id));
     }
 }

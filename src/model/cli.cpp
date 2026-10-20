@@ -17,18 +17,16 @@ std::map<std::string, std::string> options_label = {
     {"O", "other"},
     {"V", "version"},
     // 主开关
-    {"p", "password"},
     {"u", "upload"},
     {"d", "download"},
     {"s", "search"},
     {"v", "view"},
-    {"b", "build"},
+    {"c", "create"},
     {"f", "fetch"},
     {"h", "help"},
     {"m", "my-config-set"},
     {"g", "global-config-set"},
     // 修饰开关
-    {"c", "complete"},
     {"o", "out"},
     {"p", "password"},
     {"n", "name"},
@@ -41,7 +39,7 @@ std::vector<std::string> arguments;
 void cli_main(int argc, char *argv[])
 {
     // 第一段：从右向左扫描，只为了找到“真正的起点”
-    int start_idx = 1;
+    int start_idx = argc;
     for (int i = argc - 1; i >= 1; i--)
     {
         char *arg = argv[i];
