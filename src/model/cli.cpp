@@ -32,7 +32,7 @@ std::map<std::string, std::string> options_label = {
     {"n", "name"},
     // 即时开关
     {"i", "include-online-config"},
-    {"j", "jump_conig"}};
+    {"j", "jump_config"}};
 std::vector<std::string> options;
 std::vector<std::string> arguments;
 
