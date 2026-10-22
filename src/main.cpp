@@ -14,7 +14,8 @@ int main(int argc, char *argv[])
 )");
     // 默认配置参数
     config::parse_ksv_string(R"(
-
+bdc0bfa3088d5feedc1588c7807f05ec @@please_change_this_password
+e1d357e4802e1c961acc37482dcc5e10 @@./
 )");
     if ((argv[argc - 1][0] == '-') || (argv[argc - 1][0] == '@'))
     {
@@ -28,7 +29,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            cli_main(argc, argv);
+            cli::cli_main(argc, argv);
         }
     }
     else

@@ -1,3 +1,5 @@
 #pragma once
-
-void cli_main(int argc, char* argv[]);
+namespace cli
+{
+    void cli_main(int argc, char *argv[]);
+}
