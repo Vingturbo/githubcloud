@@ -40,7 +40,7 @@ namespace util
     // 核心：解析参数值
     std::string resolve_value(const std::string &raw_val)
     {
-        // 1. 如果长度小于2，或者不以 @ 开头，说明是不合规的垃圾，直接原样返回（或者你想让它崩就崩）
+        // 1. 如果长度小于2，或者不以 @ 开头，说明是不合规的垃圾
         if (raw_val.length() < 2 || raw_val[0] != '@')
         {
             return "";
@@ -54,7 +54,7 @@ namespace util
         }
         else
         {
-            if (config::get("91de27d37ac04464d4f8fd53afd0c2bc") != "yes")
+            if (config::get("91de27d37ac04464d4f8fd53afd0c2bc") != "@@yes")
             {
                 util::message_out("8a94c5bae8543a47fb0b5dcdc86240e4");
                 return "";
@@ -82,6 +82,6 @@ namespace util
 
     void message_out(const std::string &message_id)
     {
-        std::cerr << util::resolve_value(config::get(message_id));
+        std::cerr << util::resolve_value(config::get(message_id)) << std::endl;
     }
 }
