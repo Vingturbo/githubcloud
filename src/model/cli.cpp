@@ -17,6 +17,7 @@ namespace cli
         {"C", "config"},
         {"S", "share"},
         {"O", "other"},
+        {"P", "place"},
         {"V", "version"},
         // 主开关
         {"u", "upload"},
@@ -29,6 +30,9 @@ namespace cli
         {"m", "my-config-set"},
         {"g", "global-config-set"},
         {"r", "restore"},
+        {"a", "add"},
+        {"w", "use"},
+        {"x", "remove"},
         // 修饰开关
         {"o", "out"},
         {"p", "password"},
@@ -58,37 +62,40 @@ namespace cli
     std::vector<OptionSpec> OptDef = {
         // ================= 开关类 (注册 _OPT_CLASS) =================
         // 类必须包含所有它允许的主开关，以及主开关衍生出来的修饰符
-        {"internet", {"internet", "upload", "download", "search", "out", "password", "name", "complete", "base64"}, _OPT_CLASS, "", ""},
+        {"internet", {"internet", "upload", "download", "search", "out", "password", "name", "base64"}, _OPT_CLASS, "", ""},
         {"local", {"local", "search", "view", "restore", "base64", "key", "out", "timestamp"}, _OPT_CLASS, "", ""},
         {"config", {"config", "my-config-set", "global-config-set", "view"}, _OPT_CLASS, "", ""},
         {"share", {"share", "create", "fetch", "password", "out"}, _OPT_CLASS, "", ""},
+        {"place", {"place", "add", "use", "remove"}, _OPT_CLASS, "", ""},
         {"other", {"other", "fetch", "out"}, _OPT_CLASS, "", ""},
 
         // ================= 主开关 (注册 _MAIN_OPT) =================
         // 主开关必须包含自己的类、自己的修饰符
         {"version", {"version"}, _MAIN_OPT, "", ""},
         {"help", {"help"}, _MAIN_OPT, "", ""},
-        {"upload", {"upload", "internet", "password", "name", "complete", "base64"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"download", {"download", "internet", "password", "out", "complete"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"search", {"search", "internet", "local", "complete"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
+        {"upload", {"upload", "internet", "password", "name", "base64"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
+        {"download", {"download", "internet", "password", "out"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
+        {"search", {"search", "internet", "local"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
         {"view", {"view", "local", "config"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
         {"create", {"create", "share", "password"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
         {"fetch", {"fetch", "share", "other", "out"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
         {"my-config-set", {"my-config-set", "config"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
         {"global-config-set", {"global-config-set", "config"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
         {"restore", {"restore", "local", "base64", "key", "timestamp", "out"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
+        {"add", {"place", "add"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
+        {"use", {"place", "use"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
+        {"remove", {"place", "remove"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
 
         // ================= 修饰符 (消费参数) =================
         // 修饰符必须包含：自己、它允许伴随的主开关、该主开关下的操作类、以及其他可共存的修饰符
-        {"out", {"out", "download", "fetch", "restore", "internet", "password", "complete", "base64", "local", "key", "timestamp", "share", "other"}, "", "e1d357e4802e1c961acc37482dcc5e10", ""},
-        {"password", {"password", "upload", "download", "create", "internet", "complete", "base64", "out", "share"}, "", "bdc0bfa3088d5feedc1588c7807f05ec", ""},
-        {"name", {"name", "upload", "internet", "complete", "base64"}, "", "d2e2560089221ad15d2ec113e2f5b599", ""},
+        {"out", {"out", "download", "fetch", "restore", "internet", "password", "base64", "local", "key", "timestamp", "share", "other"}, "", "e1d357e4802e1c961acc37482dcc5e10", ""},
+        {"password", {"password", "upload", "download", "create", "internet", "base64", "out", "share"}, "", "bdc0bfa3088d5feedc1588c7807f05ec", ""},
+        {"name", {"name", "upload", "internet", "base64"}, "", "d2e2560089221ad15d2ec113e2f5b599", ""},
         {"key", {"key", "restore", "local", "timestamp", "base64", "out"}, "", "be3a7f9bfab0c26117cb25935df0fc8c", ""},
         {"timestamp", {"timestamp", "restore", "local", "key", "base64", "out"}, "", "0c6482892e9df6505c8de1eabca68266", ""},
 
         // ================= 无参修饰符 (传入 ebl_cfg) =================
-        {"complete", {"complete", "upload", "download", "search", "internet", "password", "name", "out", "base64"}, "", "", "c28e2e867367b3ff652b3f0bd986c4fb @@yes"},
-        {"base64", {"base64", "upload", "restore", "internet", "password", "name", "out", "complete", "local", "key", "timestamp"}, "", "", "e3656dd18b1456b33344ed264a27bf5c @@yes"}};
+        {"base64", {"base64", "upload", "restore", "internet", "password", "name", "out", "local", "key", "timestamp"}, "", "", "e3656dd18b1456b33344ed264a27bf5c @@yes"}};
     /*
     #undef _OPT_CLASS
     #undef _MAIN_OPT
@@ -257,6 +264,10 @@ namespace cli
             if (i == "debug")
             {
                 config::set("701998cfd3d1ff0378375a9826fd9edd", "@@yes");
+                continue;
+            }
+            if(i=="complete"){
+                config::set("c28e2e867367b3ff652b3f0bd986c4fb", "@@yes");
                 continue;
             }
             if (_add_opt(i))
