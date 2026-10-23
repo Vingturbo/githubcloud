@@ -28,13 +28,17 @@ namespace cli
         {"h", "help"},
         {"m", "my-config-set"},
         {"g", "global-config-set"},
+        {"r", "restore"},
         // 修饰开关
         {"o", "out"},
         {"p", "password"},
         {"n", "name"},
+        {"k", "key"},
+        {"b", "base64"},
+        {"t", "timestamp"},
         // 即时开关
         {"i", "include-online-config"},
-        {"j", "jump_config"}};
+        {"j", "jump-config"}};
     std::vector<std::string> options;
     std::vector<std::string> arguments;
 
@@ -50,18 +54,21 @@ namespace cli
 #define _OPT_CLASS "751d01cb8d7a2fc8a2884fd97530a127"
 #define _MAIN_OPT "96d12637105e2b0f518e06ebce6fbf85"
 #define _MAIN_OPT_AGE "47c99378cc29eb250bd790fc0bc74faa"
+
     std::vector<OptionSpec> OptDef = {
         // ================= 开关类 (注册 _OPT_CLASS) =================
-        {"internet", {"internet", "upload", "download", "search", "out", "password", "name", "complete"}, _OPT_CLASS, "", ""},
-        {"local", {"local", "search", "view"}, _OPT_CLASS, "", ""},
+        // 类必须包含所有它允许的主开关，以及主开关衍生出来的修饰符
+        {"internet", {"internet", "upload", "download", "search", "out", "password", "name", "complete", "base64"}, _OPT_CLASS, "", ""},
+        {"local", {"local", "search", "view", "restore", "base64", "key", "out", "timestamp"}, _OPT_CLASS, "", ""},
         {"config", {"config", "my-config-set", "global-config-set", "view"}, _OPT_CLASS, "", ""},
         {"share", {"share", "create", "fetch", "password", "out"}, _OPT_CLASS, "", ""},
-        {"other", {"other", "fetch"}, _OPT_CLASS, "", ""},
+        {"other", {"other", "fetch", "out"}, _OPT_CLASS, "", ""},
 
         // ================= 主开关 (注册 _MAIN_OPT) =================
+        // 主开关必须包含自己的类、自己的修饰符
         {"version", {"version"}, _MAIN_OPT, "", ""},
         {"help", {"help"}, _MAIN_OPT, "", ""},
-        {"upload", {"upload", "internet", "password", "name", "complete"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
+        {"upload", {"upload", "internet", "password", "name", "complete", "base64"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
         {"download", {"download", "internet", "password", "out", "complete"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
         {"search", {"search", "internet", "local", "complete"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
         {"view", {"view", "local", "config"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
@@ -69,20 +76,118 @@ namespace cli
         {"fetch", {"fetch", "share", "other", "out"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
         {"my-config-set", {"my-config-set", "config"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
         {"global-config-set", {"global-config-set", "config"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
+        {"restore", {"restore", "local", "base64", "key", "timestamp", "out"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
 
         // ================= 修饰符 (消费参数) =================
-        {"out", {"download", "fetch"}, "", "e1d357e4802e1c961acc37482dcc5e10", ""},
-        {"password", {"upload", "download", "create"}, "", "bdc0bfa3088d5feedc1588c7807f05ec", ""},
-        {"name", {"upload"}, "", "d2e2560089221ad15d2ec113e2f5b599", ""},
+        // 修饰符必须包含：自己、它允许伴随的主开关、该主开关下的操作类、以及其他可共存的修饰符
+        {"out", {"out", "download", "fetch", "restore", "internet", "password", "complete", "base64", "local", "key", "timestamp", "share", "other"}, "", "e1d357e4802e1c961acc37482dcc5e10", ""},
+        {"password", {"password", "upload", "download", "create", "internet", "complete", "base64", "out", "share"}, "", "bdc0bfa3088d5feedc1588c7807f05ec", ""},
+        {"name", {"name", "upload", "internet", "complete", "base64"}, "", "d2e2560089221ad15d2ec113e2f5b599", ""},
+        {"key", {"key", "restore", "local", "timestamp", "base64", "out"}, "", "be3a7f9bfab0c26117cb25935df0fc8c", ""},
+        {"timestamp", {"timestamp", "restore", "local", "key", "base64", "out"}, "", "0c6482892e9df6505c8de1eabca68266", ""},
 
-        // ================= 无参修饰符 (传入 ebl_cfg 给 parse_ksv_string) =================
-        // 注意：这里的字符串必须是 "32位MD5 + 1个空格 + @@yes" 的严格格式！
-        {"complete", {"upload", "download", "search"}, "", "", "c28e2e867367b3ff652b3f0bd986c4fb @@yes"}};
+        // ================= 无参修饰符 (传入 ebl_cfg) =================
+        {"complete", {"complete", "upload", "download", "search", "internet", "password", "name", "out", "base64"}, "", "", "c28e2e867367b3ff652b3f0bd986c4fb @@yes"},
+        {"base64", {"base64", "upload", "restore", "internet", "password", "name", "out", "complete", "local", "key", "timestamp"}, "", "", "e3656dd18b1456b33344ed264a27bf5c @@yes"}};
     /*
     #undef _OPT_CLASS
     #undef _MAIN_OPT
     #undef _MAIN_OPT_AGE
     */
+
+    std::vector<std::string> options_have;
+    int argeat = 0;
+
+    bool _add_opt(std::string opt_text)
+    {
+        // 1. 查表：寻找该开关的定义
+        const OptionSpec *spec = nullptr;
+        for (const auto &s : OptDef)
+        {
+            if (s.name == opt_text)
+            {
+                spec = &s;
+                break;
+            }
+        }
+
+        // 不存在的开关
+        if (!spec)
+        {
+            util::message_out("4ce3b19939d8cec5e725f8696a45e663");
+            return true;
+        }
+
+        // 2. 兼容性无向图校验（求交集思想）
+        // 遍历之前已经成功添加的开关，看看新开关在不在它们的兼容列表里
+        for (const auto &existing_opt : options_have)
+        {
+            bool found = false;
+            for (const auto &s : OptDef)
+            {
+                if (s.name == existing_opt)
+                {
+                    // 在已存在开关的 compatible 列表中寻找新开关
+                    for (const auto &c : s.compatible)
+                    {
+                        if (c == opt_text)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            // 只要有一个已存在的开关不兼容它，立刻报错
+            if (!found)
+            {
+                util::message_out("4ce3b19939d8cec5e725f8696a45e663");
+                return true;
+            }
+        }
+
+        // 3. 核心冲突检测（利用你天才般的 reg_key 逻辑）
+        if (!spec->reg_key.empty())
+        {
+            // 如果该 key 不存在，返回 opt_text；如果存在，返回之前存入的值。
+            // 如果之前的操作是另一个同类（比如之前是 upload，现在是 download），两者不等，触发冲突！
+            std::string existing = config::get(spec->reg_key, "@@" + opt_text);
+            if (util::resolve_value(existing) != opt_text)
+            {
+                util::message_out("4ce3b19939d8cec5e725f8696a45e663");
+                return true;
+            }
+            // 注册进配置
+            config::set(spec->reg_key, "@@" + opt_text);
+        }
+
+        // 4. 参数消费
+        if (!spec->opt.empty())
+        {
+            // 如果参数不够用了，报错
+            if (argeat >= arguments.size())
+            {
+                util::message_out("eddeb0cca6c84cffa12b5a7fb2900055");
+                return true;
+            }
+            // 存入参数，并把游标后移
+            config::set(spec->opt, arguments[argeat]);
+            argeat++;
+        }
+
+        // 5. 无参修饰符的特殊行为（比如 base64, complete）
+        if (!spec->ebl_cfg.empty())
+        {
+            config::parse_ksv_string(spec->ebl_cfg);
+        }
+
+        // 6. 成功添加，记录到已出现列表
+        options_have.push_back(opt_text);
+
+        return false;
+    }
 
     void cli_main(int argc, char *argv[])
     {
@@ -133,5 +238,37 @@ namespace cli
                 arguments.push_back(arg);
             }
         }
+
+        // 开关解析与参数填充
+        for (std::string i : options)
+        {
+            if (i == "jump-config")
+            {
+                config::parse_ksv_string(util::resolve_value(arguments[argeat]));
+                argeat++;
+                continue;
+            }
+            if (i == "include-online-config")
+            {
+                util::load_online_config(util::resolve_value(arguments[argeat]));
+                argeat++;
+                continue;
+            }
+            if (i == "debug")
+            {
+                config::set("701998cfd3d1ff0378375a9826fd9edd", "@@yes");
+                continue;
+            }
+            if (_add_opt(i))
+                return;
+        }
+        if (argeat != arguments.size())
+        {
+            util::message_out("eddeb0cca6c84cffa12b5a7fb2900055");
+            return;
+        }
+
+        // test
+        config::print_all();
     }
 }

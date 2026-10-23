@@ -84,4 +84,6 @@ namespace util
     {
         std::cerr << util::resolve_value(config::get(message_id)) << std::endl;
     }
+
+    void load_online_config(const std::string &online_config_URL) {}
 }
