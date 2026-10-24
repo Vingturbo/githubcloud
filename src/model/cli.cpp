@@ -57,7 +57,7 @@ namespace cli
 
 #define _OPT_CLASS "751d01cb8d7a2fc8a2884fd97530a127"
 #define _MAIN_OPT "96d12637105e2b0f518e06ebce6fbf85"
-#define _MAIN_OPT_AGE "47c99378cc29eb250bd790fc0bc74faa"
+#define _MAIN_OPT_ARG "47c99378cc29eb250bd790fc0bc74faa"
 
     std::vector<OptionSpec> OptDef = {
         // ================= 开关类 (注册 _OPT_CLASS) =================
@@ -70,21 +70,21 @@ namespace cli
         {"other", {"other", "fetch", "out"}, _OPT_CLASS, "", ""},
 
         // ================= 主开关 (注册 _MAIN_OPT) =================
-        // 主开关必须包含自己的类、自己的修饰符
+        // 主开关必须包含自己的类、自己的修饰符、以及自己的从属的开关类
         {"version", {"version"}, _MAIN_OPT, "", ""},
         {"help", {"help"}, _MAIN_OPT, "", ""},
-        {"upload", {"upload", "internet", "password", "name", "base64"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"download", {"download", "internet", "password", "out"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"search", {"search", "internet", "local"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"view", {"view", "local", "config"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"create", {"create", "share", "password"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"fetch", {"fetch", "share", "other", "out"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"my-config-set", {"my-config-set", "config"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"global-config-set", {"global-config-set", "config"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"restore", {"restore", "local", "base64", "key", "timestamp", "out"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"add", {"place", "add"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"use", {"place", "use"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
-        {"remove", {"place", "remove"}, _MAIN_OPT, _MAIN_OPT_AGE, ""},
+        {"upload", {"upload", "internet", "password", "name", "base64"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"download", {"download", "internet", "password", "out"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"search", {"search", "internet", "local"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"view", {"view", "local", "config"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"create", {"create", "share", "password"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"fetch", {"fetch", "share", "other", "out"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"my-config-set", {"my-config-set", "config"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"global-config-set", {"global-config-set", "config"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"restore", {"restore", "local", "base64", "key", "timestamp", "out"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"add", {"place", "add"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"use", {"place", "use"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"remove", {"place", "remove"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
 
         // ================= 修饰符 (消费参数) =================
         // 修饰符必须包含：自己、它允许伴随的主开关、该主开关下的操作类、以及其他可共存的修饰符
@@ -99,7 +99,7 @@ namespace cli
     /*
     #undef _OPT_CLASS
     #undef _MAIN_OPT
-    #undef _MAIN_OPT_AGE
+    #undef _MAIN_OPT_ARG
     */
 
     std::vector<std::string> options_have;
@@ -241,7 +241,7 @@ namespace cli
             }
             else if (arg[0] == '@')
             {
-                // 参数：你这里存了带 @ 的，记得后面去前缀
+                if(arg.substr(0,2)=="@!")util::resolve_value(arg);
                 arguments.push_back(arg);
             }
         }
@@ -279,7 +279,15 @@ namespace cli
             return;
         }
 
-        // test
-        config::print_all();
+        //开关和参数处理
+        if(util::resolve_value(config::get("96d12637105e2b0f518e06ebce6fbf85"))=="help"){
+            std::cerr<<init::help_doc<<std::endl;
+        }
+        if(util::resolve_value(config::get("96d12637105e2b0f518e06ebce6fbf85"))=="version"){
+            std::cerr<<"GHCD_VERSION: "<<_GHCD_VERSION<<std::endl;
+            std::cerr<<"MODEL_VERSION: "<<_MODEL_VERSION<<std::endl;
+            std::cerr<<"Copyright © 2026 Vingturbo"<<std::endl;
+            std::cerr<<"SPDX-License-Identifier: AGPL-3.0-or-later"<<std::endl;
+        }
     }
 }

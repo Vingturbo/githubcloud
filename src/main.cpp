@@ -19,6 +19,7 @@ eddeb0cca6c84cffa12b5a7fb2900055 @@参数数量不匹配
 bdc0bfa3088d5feedc1588c7807f05ec @@please_change_this_password
 e1d357e4802e1c961acc37482dcc5e10 @@./
 )");
+
     if ((argv[argc - 1][0] == '-') || (argv[argc - 1][0] == '@'))
     {
         if (strcmp(argv[argc - 1], "--web") == 0)
@@ -40,7 +41,6 @@ e1d357e4802e1c961acc37482dcc5e10 @@./
     }
     return 0;
 }
-
 
 /*
 《自由软件宣言》
