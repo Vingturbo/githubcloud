@@ -1,9 +1,12 @@
 #include "util.hpp"
+#include "config.hpp"
 #include <string>
 #include <map>
 #include <cstdio>
 #include <iostream>
-#include "config.hpp"
+#include <chrono>
+#include <ctime>
+#include <iomanip>
 
 // 如果 Windows 下需要
 #ifdef _WIN32
@@ -86,4 +89,28 @@ namespace util
     }
 
     void load_online_config(const std::string &online_config_URL) {}
+
+    void debug_log(const std::string &message)
+    {
+        if (util::resolve_value(config::get("701998cfd3d1ff0378375a9826fd9edd")) == "yes")
+        {
+            // 1. 获取当前时间点
+            auto now = std::chrono::system_clock::now();
+
+            // 2. 获取毫秒部分
+            auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+
+            // 3. 获取秒级时间并转为 UTC 的 tm 结构体 (因为末尾是 Z，必须用 gmtime)
+            std::time_t t = std::chrono::system_clock::to_time_t(now);
+            std::tm tm = *std::gmtime(&t);
+
+            // 4. 格式化输出
+            char buf[32];
+            // 先格式化 年月日T时分秒
+            std::strftime(buf, sizeof(buf), "%Y-%m-%dT%H:%M:%S", &tm);
+
+            // 5. 拼接毫秒和 Z，输出到 stderr
+            std::cerr << "[DEBUG " << buf << '.'<< std::setfill('0') << std::setw(3) << ms.count()<< "Z] " << message << std::endl;
+        }
+    }
 }

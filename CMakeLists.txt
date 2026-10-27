@@ -14,17 +14,6 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 # 2. 定义可执行文件目标 (必须先有目标！)
 add_executable(ghcd ${SOURCES})
 
-# 3. 定义 Include 路径
-target_include_directories(ghcd PRIVATE
-    src
-    src/model
-    src/lib
-    src/lib/mongoose
-    src/lib/monocypher
-    src/lib/xxhash
-    src/lib/json
-)
-
 # 4. 针对 Release 或 MinSizeRel 模式应用极致优化
 if(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel" OR CMAKE_BUILD_TYPE STREQUAL "Release")
     

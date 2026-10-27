@@ -241,7 +241,8 @@ namespace cli
             }
             else if (arg[0] == '@')
             {
-                if(arg.substr(0,2)=="@!")util::resolve_value(arg);
+                if (arg.substr(0, 2) == "@!")
+                    util::resolve_value(arg);
                 arguments.push_back(arg);
             }
         }
@@ -266,28 +267,46 @@ namespace cli
                 config::set("701998cfd3d1ff0378375a9826fd9edd", "@@yes");
                 continue;
             }
-            if(i=="complete"){
+            if (i == "complete")
+            {
                 config::set("c28e2e867367b3ff652b3f0bd986c4fb", "@@yes");
                 continue;
             }
             if (_add_opt(i))
                 return;
         }
+
+        for (std::string i : options)
+        {
+            util::debug_log("Option: [" + i + "]");
+        }
+
+        for (std::string i : arguments)
+        {
+            util::debug_log("Argument: [" + i + "]");
+        }
+
+        util::debug_log("--------config map--------");
+        config::print_all();
+        util::debug_log("========config map========");
+
         if (argeat != arguments.size())
         {
             util::message_out("eddeb0cca6c84cffa12b5a7fb2900055");
             return;
         }
 
-        //开关和参数处理
-        if(util::resolve_value(config::get("96d12637105e2b0f518e06ebce6fbf85"))=="help"){
-            std::cerr<<init::help_doc<<std::endl;
+        // 开关和参数处理
+        if (util::resolve_value(config::get("96d12637105e2b0f518e06ebce6fbf85")) == "help")
+        {
+            std::cerr << init::help_doc << std::endl;
         }
-        if(util::resolve_value(config::get("96d12637105e2b0f518e06ebce6fbf85"))=="version"){
-            std::cerr<<"GHCD_VERSION: "<<_GHCD_VERSION<<std::endl;
-            std::cerr<<"MODEL_VERSION: "<<_MODEL_VERSION<<std::endl;
-            std::cerr<<"Copyright © 2026 Vingturbo"<<std::endl;
-            std::cerr<<"SPDX-License-Identifier: AGPL-3.0-or-later"<<std::endl;
+        if (util::resolve_value(config::get("96d12637105e2b0f518e06ebce6fbf85")) == "version")
+        {
+            std::cerr << "GHCD_VERSION: " << _GHCD_VERSION << std::endl;
+            std::cerr << "MODEL_VERSION: " << _MODEL_VERSION << std::endl;
+            std::cerr << "Copyright © 2026 Vingturbo" << std::endl;
+            std::cerr << "SPDX-License-Identifier: AGPL-3.0-or-later" << std::endl;
         }
     }
 }
