@@ -8,4 +8,5 @@ namespace util
     void message_out(const std::string &message_id);
     void load_online_config(const std::string &online_config_URL);
     void debug_log(const std::string &message);
+    void debug_print(const std::string &message);
 }

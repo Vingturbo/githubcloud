@@ -13,6 +13,8 @@ int main(int argc, char *argv[])
 8a94c5bae8543a47fb0b5dcdc86240e4 @@警告: 在没有开启高级参数的情况下，仍然出现了不是字面量的参数值
 4ce3b19939d8cec5e725f8696a45e663 @@出现互相冲突或者不存在的开关
 eddeb0cca6c84cffa12b5a7fb2900055 @@参数数量不匹配
+4efd85ff4db9a53546080c184278e100 @@缺失必须的开关类
+361aa96dff5d304d40317e2251140951 @@缺失必须的主开关
 )");
     // 默认配置参数
     config::parse_ksv_string(R"(
@@ -37,7 +39,7 @@ e1d357e4802e1c961acc37482dcc5e10 @@./
     }
     else
     {
-        std::cout << "desktop mode is not implemented yet." << std::endl;
+        cli::cli_main(argc, argv);
     }
     return 0;
 }

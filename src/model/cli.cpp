@@ -33,6 +33,7 @@ namespace cli
         {"a", "add"},
         {"w", "use"},
         {"x", "remove"},
+        {"l", "link"},
         // 修饰开关
         {"o", "out"},
         {"p", "password"},
@@ -66,8 +67,8 @@ namespace cli
         {"local", {"local", "search", "view", "restore", "base64", "key", "out", "timestamp"}, _OPT_CLASS, "", ""},
         {"config", {"config", "my-config-set", "global-config-set", "view"}, _OPT_CLASS, "", ""},
         {"share", {"share", "create", "fetch", "password", "out"}, _OPT_CLASS, "", ""},
-        {"place", {"place", "add", "use", "remove"}, _OPT_CLASS, "", ""},
-        {"other", {"other", "fetch", "out"}, _OPT_CLASS, "", ""},
+        {"place", {"place", "add", "use", "remove", "link"}, _OPT_CLASS, "", ""},
+        {"other", {"other", "fetch"}, _OPT_CLASS, "", ""},
 
         // ================= 主开关 (注册 _MAIN_OPT) =================
         // 主开关必须包含自己的类、自己的修饰符、以及自己的从属的开关类
@@ -85,10 +86,11 @@ namespace cli
         {"add", {"place", "add"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
         {"use", {"place", "use"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
         {"remove", {"place", "remove"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
+        {"link", {"place", "link"}, _MAIN_OPT, _MAIN_OPT_ARG, ""},
 
         // ================= 修饰符 (消费参数) =================
         // 修饰符必须包含：自己、它允许伴随的主开关、该主开关下的操作类、以及其他可共存的修饰符
-        {"out", {"out", "download", "fetch", "restore", "internet", "password", "base64", "local", "key", "timestamp", "share", "other"}, "", "e1d357e4802e1c961acc37482dcc5e10", ""},
+        {"out", {"out", "download", "fetch", "restore", "internet", "password", "base64", "local", "key", "timestamp", "share"}, "", "e1d357e4802e1c961acc37482dcc5e10", ""},
         {"password", {"password", "upload", "download", "create", "internet", "base64", "out", "share"}, "", "bdc0bfa3088d5feedc1588c7807f05ec", ""},
         {"name", {"name", "upload", "internet", "base64"}, "", "d2e2560089221ad15d2ec113e2f5b599", ""},
         {"key", {"key", "restore", "local", "timestamp", "base64", "out"}, "", "be3a7f9bfab0c26117cb25935df0fc8c", ""},
@@ -104,6 +106,21 @@ namespace cli
 
     std::vector<std::string> options_have;
     int argeat = 0;
+
+    class OPT_USE
+    {
+    public:
+        void other_use()
+        {
+            if (util::resolve_value(config::get(_MAIN_OPT)) == "fetch")
+            {
+                if (util::resolve_value(config::get(_MAIN_OPT_ARG)) == "enable_config")
+                {
+                    config::print_all();
+                }
+            }
+        }
+    } opt_use;
 
     bool _add_opt(std::string opt_text)
     {
@@ -246,6 +263,8 @@ namespace cli
                 arguments.push_back(arg);
             }
         }
+        if (options.size() == 0)
+            options.push_back("help");
 
         // 开关解析与参数填充
         for (std::string i : options)
@@ -287,7 +306,8 @@ namespace cli
         }
 
         util::debug_log("--------config map--------");
-        config::print_all();
+        if (util::resolve_value(config::get("701998cfd3d1ff0378375a9826fd9edd")) == "yes")
+            config::print_all();
         util::debug_log("========config map========");
 
         if (argeat != arguments.size())
@@ -300,6 +320,7 @@ namespace cli
         if (util::resolve_value(config::get("96d12637105e2b0f518e06ebce6fbf85")) == "help")
         {
             std::cerr << init::help_doc << std::endl;
+            return;
         }
         if (util::resolve_value(config::get("96d12637105e2b0f518e06ebce6fbf85")) == "version")
         {
@@ -307,6 +328,20 @@ namespace cli
             std::cerr << "MODEL_VERSION: " << _MODEL_VERSION << std::endl;
             std::cerr << "Copyright © 2026 Vingturbo" << std::endl;
             std::cerr << "SPDX-License-Identifier: AGPL-3.0-or-later" << std::endl;
+            return;
+        }
+        if (!config::has(_OPT_CLASS))
+        {
+            util::message_out("4efd85ff4db9a53546080c184278e100");
+            return;
+        }
+        if (!config::has(_MAIN_OPT))
+        {
+            util::message_out("361aa96dff5d304d40317e2251140951");
+            return;
+        }
+        if(util::resolve_value(config::get(_OPT_CLASS))=="other"){
+            opt_use.other_use();
         }
     }
 }

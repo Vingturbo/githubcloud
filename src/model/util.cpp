@@ -113,4 +113,7 @@ namespace util
             std::cerr << "[DEBUG " << buf << '.'<< std::setfill('0') << std::setw(3) << ms.count()<< "Z] " << message << std::endl;
         }
     }
+    void debug_print(const std::string &message){
+        if (util::resolve_value(config::get("701998cfd3d1ff0378375a9826fd9edd")) == "yes")std::cerr<<message<<std::endl;
+    }
 }

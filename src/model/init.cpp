@@ -38,6 +38,7 @@ ghcd [[开关]... [参数]...]...
         -a, --add                    添加对象, 需要对象参数
         -w, --use                    使用对象, 需要对象参数
         -x, --remove                 移除对象, 需要对象参数
+        -l, --link                   从路径链接对象，需要正确的路径参数
     修饰开关:
         -o, --out                    设置文件输出路径, 需要文件路径参数
         -p, --password               设置文件加密用户密码
@@ -48,7 +49,7 @@ ghcd [[开关]... [参数]...]...
         --debug                      开启调试模式
         --complete                   指示程序以完成指定任务为最高目标
     特殊开关:
-        -i, --include-online-config  从 http(s), file, data:URL 协议加载文件, 将其作为标准 KSV 文件处理, 需要一个符合标准的 URL 参数
+        -i, --include-online-config  从 http(s), file, data:URL 协议加载文件, 将其作为标准 KSV 文件处理, 需要一个符合标准的 URI 参数
         -j, --jump-config            临时更改一条运行时配置, 需要一个 KSV 格式的单行单配置参数
 
 关于开关之间的兼容, 依赖, 排斥关系, 请查看源代码详细了解
