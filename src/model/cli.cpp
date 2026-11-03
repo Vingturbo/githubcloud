@@ -117,6 +117,11 @@ namespace cli
                 if (util::resolve_value(config::get(_MAIN_OPT_ARG)) == "enable_config")
                 {
                     config::print_all();
+                }else if(util::resolve_value(config::get(_MAIN_OPT_ARG)).substr(0, 8) == "printopt"){
+                    std::string class_opt_use_temp_91de27d37ac04464d4f8fd53afd0c2bc = config::get("91de27d37ac04464d4f8fd53afd0c2bc", "@@no");
+                    config::set("91de27d37ac04464d4f8fd53afd0c2bc", "@@yes");
+                    std::cerr<<util::resolve_value(config::get(_MAIN_OPT_ARG).substr(10))<<std::endl;
+                    config::set("91de27d37ac04464d4f8fd53afd0c2bc", class_opt_use_temp_91de27d37ac04464d4f8fd53afd0c2bc);
                 }
             }
         }
