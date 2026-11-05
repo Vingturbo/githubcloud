@@ -10,6 +10,8 @@ GHCD，全称 GayHub Cloud Disk ，主旨是利用 GitHub 仓库的 Releases 来
 
 GHCD 由多个较为独立但互相联系的部分组成，下面是你可能需要了解的一些部分
 
+> 关于 WIKI 的编写规范，参考[WIKI 撰写规范](wiki_write_rule)
+
 |页面|概述|
 |:---:|:---:|
 |[项目代码编写宗旨](project_code_write_rule)|代表着作者对于项目的代码应该如何编纂的看法|

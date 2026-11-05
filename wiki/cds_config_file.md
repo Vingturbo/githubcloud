@@ -33,20 +33,81 @@ Root 是整棵树的根，是所有节点的默认父亲和共同祖先，所有
 首先，一个节点的表示字符串前面的缩进数量代表着这个节点所属的层数，比如，对于 Root 节点的所有儿子节点，他们的层数都是0，也就是说明，这些节点前面的缩进数量为0，即为顶格书写。而当前层级的每一个节点，都归属于这个层级这个部分的父节点。如果遇到一个目录节点，则代表着，当前层级的下一层级此后的部分的父节点即为这个目录节点，直到文件终止或者被另外的目录节点覆盖
 
 - 5: 结构示例  
-``` CDS
-githubcloud
-    src
-        main.cpp program cxx main code
-        model
-            cli.cpp program cxx cli code
-            cli.hpp program cxx cli head
-```
-可以解析成以下树的结构
-``` tree
-[Root] -> githubcloud
-githubcloud -> src
-src -> main.cpp (program cxx main code)
-src -> model
-model -> cli.cpp (program cxx cli code)
-model -> cli.hpp (program cxx cli head)
-```
+    ``` CDS
+    githubcloud
+        src
+            main.cpp program cxx main code
+            model
+                cli.cpp program cxx cli code
+                cli.hpp program cxx cli head
+    ```
+    可以解析成以下树的结构
+    ``` tree
+    [Root] -> githubcloud
+    githubcloud -> src
+    src -> main.cpp (program cxx main code)
+    src -> model
+    model -> cli.cpp (program cxx cli code)
+    model -> cli.hpp (program cxx cli head)
+    ```
+
+## 程序使用参考
+
+- a) 从输入读取配置文件的文本内容
+- b) 从文件第一个字节开始，按照`\n`切分为字符串数组
+- c) 从第0个数组项开始，重复，依次递增，将获取的字符串按照 c0 到 c1 处理，直到达到数组长度
+    - c0) 依次访问字符串的第{0, 4, 8, ...}字符，直到找到第一个不是空格的字符，并且据此计算缩进的数量
+    - c1) 忽视缩进，查找剩余的字符串，直到找到第一个空格或者字符串结束
+        - c1A) 如果找到了第一个空格，那么代表着这是一个叶子节点，同时空格前面的字符子串是这个节点的名称（不包含缩进和这个空格），空格后面的字符子串是值，按照当前层级的当前生效父节点加入树
+        - c1B) 如果直到字符串结束，都无法查找到空格，那么代表这个节点是一个目录节点，将节点名称（不包含缩进）加入记录表，作为下一层级接下来的父亲节点，直到被覆盖，关于记录表，你可能需要以层级作为索引的动态数组
+
+## 特殊说明
+
+- 我们建议将 CDS配置文件 的文件扩展名设置为 `.cds`
+
+## 特殊情况处理
+
+- a) 如果遇到了一个存在缩进的节点，但是它所在的层级并没有生效的父亲节点，或者与当前生效的父亲节点语义上不连贯（即当前节点与生效父亲节点的配置项中间存在在此层级之上的节点），那么，你可以采取以下三种做法
+    - 将当前节点归属于那个当前此层级生效的父亲节点
+    - 将当前节点归属于 Root 节点
+    - 明确的报错  
+
+    比如以下的示例就展现了这种情况
+    ``` CDS
+    githubcloud
+        src
+            main.cpp program cxx main code
+            model
+                cli.cpp program cxx cli code
+                cli.hpp program cxx cli head
+        CMakeList.txt CMake build text
+            gunmu.gunmu this is gunmu
+    ```
+    按照上面的三种办法解析，可以得到以下树结构或输出信息
+    - 将当前节点归属于那个当前此层级生效的父亲节点
+    ``` tree
+    [Root] -> githubcloud
+    githubcloud -> src
+    src -> main.cpp (program cxx main code)
+    src -> model
+    model -> cli.cpp (program cxx cli code)
+    model -> cli.hpp (program cxx cli head)
+    githubcloud -> CMakeList.txt (CMake build text)
+    src -> gunmu.gunmu (this is gunmu)
+    ```
+    - 将当前节点归属于 Root 节点
+    ``` tree
+    [Root] -> githubcloud
+    githubcloud -> src
+    src -> main.cpp (program cxx main code)
+    src -> model
+    model -> cli.cpp (program cxx cli code)
+    model -> cli.hpp (program cxx cli head)
+    githubcloud -> CMakeList.txt (CMake build text)
+    [Root] -> gunmu.gunmu (this is gunmu)
+    ```
+    - 明确的报错
+    ``` bash
+    Error: 文件 example.cds 中的 gunmu.gunmu [第8行]不存在合法的父亲节点
+    ```
+- b) 如果同一个叶子节点的值在不同地方被多次写入不同的值，那么按照更新时间保留最新的值
