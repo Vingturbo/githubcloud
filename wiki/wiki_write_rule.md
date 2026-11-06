@@ -1,7 +1,16 @@
 # WIKI 撰写规范
 
-> 本页面的编写目的在于正确的编写 WIKI 文件，而不会产生错误的排版
+> 本页面的编写目的在于正确的编写 WIKI 文件，而不会产生错误的排版和歧义
 
+> 本仓库所有 WIKI 文档采用 CC BY-SA 4.0 许可发布，详见仓库根目录 `LICENSE-docs`
 ## 规范和依据
 
-所有 WIKI 文件使用 Markdown 格式编写，遵循 GitHub Flavored Markdown Spec 规范的 Markdown 标准和推荐的书写格式
+- 所有 WIKI 文件使用 Markdown 格式编写，建议遵循 GitHub Flavored Markdown Spec 规范的 Markdown 标准和推荐的书写格式
+- 渲染效果以 VSCode 内置 Markdown 预览（markdown-it 引擎）为准。
+- 所有文件基于 UTF-8 编码使用
+- 对于任何文档，如果没有特殊说明，那么文档中所描述的 “字符串”、“字符”或类似表达等，均默认不存在类似于 `\x00`(NUL) 等特殊字符
+- 代码块必须明确标明代码语言
+- 仓库内部文档间的 Markdown 链接要使用相对链接
+- 换行符只能使用 `\n`(LF)
+- 不建议使用行尾空格换行
+- 每个 `.md` 文件一级标题唯一，且与文件名语义一致
