@@ -4,24 +4,48 @@
 #include "model/cli.hpp"
 #include "model/config.hpp"
 #include "model/init.hpp"
+#include "model/cds.hpp"
 
-int main(int argc, char *argv[])
-{
-    // i18n默认文本
-    config::parse_ksv_string(R"(
+// i18n默认文本
+std::string i18n_config=R"(
 1d510a311320bb3fb97abff44530c9d9 @@出现不受到支持的开关
 8a94c5bae8543a47fb0b5dcdc86240e4 @@警告: 在没有开启高级参数的情况下，仍然出现了不是字面量的参数值
 4ce3b19939d8cec5e725f8696a45e663 @@出现互相冲突或者不存在的开关
 eddeb0cca6c84cffa12b5a7fb2900055 @@参数数量不匹配
 4efd85ff4db9a53546080c184278e100 @@缺失必须的开关类
 361aa96dff5d304d40317e2251140951 @@缺失必须的主开关
-)");
-    // 默认配置参数
-    config::parse_ksv_string(R"(
+)";
+// 默认配置参数
+std::string d_config=R"(
 bdc0bfa3088d5feedc1588c7807f05ec @@please_change_this_password
 e1d357e4802e1c961acc37482dcc5e10 @@./
-)");
+)";
 
+void test()
+{
+    auto root = cds::create();
+    cds::load(root, R"(githubcloud
+    src
+        main.cpp program cxx main code
+        model
+            cli.cpp program cxx cli code
+            cli.hpp program cxx cli head
+)");
+    auto ghcd = cds::get_child_by_name(root, "githubcloud");
+    auto src = cds::get_child_by_name(ghcd, "src");
+    cds::load(src, "hello.cpp program cxx hello code");
+    cds::load(ghcd, "i18n");
+    auto i18n = cds::get_child_by_name(ghcd, "i18n");
+    cds::load(i18n, i18n_config);
+    std::cerr << cds::get_cds_tree(root) << std::endl;
+    std::cerr << cds::fetch(root, {"githubcloud", "i18n", "4ce3b19939d8cec5e725f8696a45e663"}) << std::endl;
+}
+
+int main(int argc, char *argv[])
+{
+    test();
+    config::parse_ksv_string(i18n_config);
+    config::parse_ksv_string(d_config);
     if ((argv[argc - 1][0] == '-') || (argv[argc - 1][0] == '@'))
     {
         if (strcmp(argv[argc - 1], "--web") == 0)

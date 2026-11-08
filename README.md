@@ -1,1 +1,1 @@
-hello world
+# GHCD - GayHub Cloud Disk
