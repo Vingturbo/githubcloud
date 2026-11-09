@@ -1,0 +1,4 @@
+[submodule "src/lib/fltk"]
+	path = src/lib/fltk
+	url = https://gh-proxy.org/https://github.com/fltk/fltk.git
+	branch = branch-1.4

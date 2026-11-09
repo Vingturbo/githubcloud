@@ -43,7 +43,7 @@ void test()
 
 int main(int argc, char *argv[])
 {
-    test();
+    //test();
     config::parse_ksv_string(i18n_config);
     config::parse_ksv_string(d_config);
     if ((argv[argc - 1][0] == '-') || (argv[argc - 1][0] == '@'))

@@ -11,26 +11,39 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "src/*.c"
 )
 
-# 2. 定义可执行文件目标 (必须先有目标！)
+# 1.1 排除 FLTK 子模块，防止重复编译
+list(FILTER SOURCES EXCLUDE REGEX "/src/lib/fltk/")
+
+# 2. 配置 FLTK 构建选项（必须在 add_subdirectory 之前）
+set(FLTK_BUILD_TEST         OFF CACHE BOOL "" FORCE)
+set(FLTK_BUILD_EXAMPLES     OFF CACHE BOOL "" FORCE)
+set(FLTK_BUILD_FLUID        OFF CACHE BOOL "" FORCE)
+set(FLTK_BUILD_FLTK_OPTIONS OFF CACHE BOOL "" FORCE)
+
+# 可选：静态链接 FLTK
+set(FLTK_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+
+# 3. 把 FLTK 源码树作为子项目接入
+add_subdirectory(src/lib/fltk EXCLUDE_FROM_ALL)
+
+# 4. 定义可执行文件目标
 add_executable(ghcd ${SOURCES})
 
-# 4. 针对 Release 或 MinSizeRel 模式应用极致优化
+# 5. 链接 FLTK
+target_link_libraries(ghcd PRIVATE fltk)
+
+# 6. 优化选项
 if(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel" OR CMAKE_BUILD_TYPE STREQUAL "Release")
-    
-    # 编译选项
+
     target_compile_options(ghcd PRIVATE
-        -Os                      # 优化大小
-        -ffunction-sections      # 函数分段
-        -fdata-sections          # 数据分段
-        # -fno-rtti                # 禁用 RTTI（你目前没用到，可以开）
-        # -fno-exceptions          # 禁用异常（你目前没用到，可以开。但注意 json 库可能依赖异常）
-        -fvisibility=hidden      # 隐藏内部符号
+        -Os
+        -ffunction-sections
+        -fdata-sections
+        -fvisibility=hidden
     )
 
-    # 链接选项
     target_link_options(ghcd PRIVATE
-        -Wl,--gc-sections        # 链接器开启垃圾回收，剔除无用代码
-        -s                       # 链接时去除符号表
-        # -flto                    # 启用链接时优化（如果遇到报错可以先注释掉）
+        -Wl,--gc-sections
+        -s
     )
 endif()
