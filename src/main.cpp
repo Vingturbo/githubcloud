@@ -2,9 +2,11 @@
 #include <cstring>
 #include <string_view>
 #include "model/cli.hpp"
+#include "model/desktop.hpp"
 #include "model/config.hpp"
 #include "model/init.hpp"
 #include "model/cds.hpp"
+#include "model/util.hpp"
 
 // i18n默认文本
 std::string i18n_config=R"(
@@ -46,6 +48,7 @@ int main(int argc, char *argv[])
     //test();
     config::parse_ksv_string(i18n_config);
     config::parse_ksv_string(d_config);
+    util::load_config();
     if ((argv[argc - 1][0] == '-') || (argv[argc - 1][0] == '@'))
     {
         if (strcmp(argv[argc - 1], "--web") == 0)
@@ -54,7 +57,7 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(argv[argc - 1], "--desktop") == 0)
         {
-            std::cout << "desktop mode is not implemented yet." << std::endl;
+            desktop::desktop_main();
         }
         else
         {

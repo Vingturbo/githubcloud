@@ -1,5 +1,7 @@
 #include "util.hpp"
 #include "config.hpp"
+#include "cds.hpp"
+#include "../lib/monocypher/monocypher.h"
 #include <string>
 #include <map>
 #include <cstdio>
@@ -7,6 +9,9 @@
 #include <chrono>
 #include <ctime>
 #include <iomanip>
+#include <cstdlib>
+#include <filesystem>
+#include <fstream>
 
 // 如果 Windows 下需要
 #ifdef _WIN32
@@ -16,6 +21,16 @@
 
 namespace util
 {
+    std::filesystem::path user_config_path;
+    std::filesystem::path place_local_index;
+    std::filesystem::path place_config_path;
+
+    std::string user_config_content;
+    std::string place_local_index_content;
+    std::string place_config_content;
+
+    cds::Root place_cds_node = cds::create();
+
     std::map<std::string, std::string> bang_cache;
     std::string exec_command(const std::string &cmd)
     {
@@ -110,10 +125,51 @@ namespace util
             std::strftime(buf, sizeof(buf), "%Y-%m-%dT%H:%M:%S", &tm);
 
             // 5. 拼接毫秒和 Z，输出到 stderr
-            std::cerr << "[DEBUG " << buf << '.'<< std::setfill('0') << std::setw(3) << ms.count()<< "Z] " << message << std::endl;
+            std::cerr << "[DEBUG " << buf << '.' << std::setfill('0') << std::setw(3) << ms.count() << "Z] " << message << std::endl;
         }
     }
-    void debug_print(const std::string &message){
-        if (util::resolve_value(config::get("701998cfd3d1ff0378375a9826fd9edd")) == "yes")std::cerr<<message<<std::endl;
+
+    void debug_print(const std::string &message)
+    {
+        if (util::resolve_value(config::get("701998cfd3d1ff0378375a9826fd9edd")) == "yes")
+            std::cerr << message << std::endl;
+    }
+
+    void load_config()
+    {
+#if defined(_WIN32)
+        auto system_config_path = std::filesystem::path(getenv("ProgramData")) / "ghcd" / "system.ksv";
+        user_config_path = std::filesystem::path(getenv("LOCALAPPDATA")) / "ghcd" / "user.ksv";
+        place_local_index = std::filesystem::path(getenv("LOCALAPPDATA")) / "ghcd" / "place.cds";
+        auto place_root = std::filesystem::path(getenv("USERPROFILE")) / ".ghcd" / "place";
+#else
+        auto system_config_path = std::filesystem::path("/etc/ghcd/system.ksv");
+        const char *xdg = getenv("XDG_CONFIG_HOME");
+        const char *home = getenv("HOME");
+        std::filesystem::path config_root;
+        if (xdg && *xdg)
+            config_root = xdg;
+        else
+            config_root = std::filesystem::path(home) / ".config";
+        user_config_path = config_root / "ghcd" / "user.ksv";
+        place_local_index = config_root / "ghcd" / "place.ksv";
+        auto place_root = std::filesystem::path(getenv("HOME")) / ".ghcd" / "place";
+#endif
+        std::ifstream system_config_file(system_config_path);
+        std::ifstream user_config_file(user_config_path);
+        std::ifstream place_local_index_file(place_local_index);
+        std::string system_config_content((std::istreambuf_iterator<char>(system_config_file)), std::istreambuf_iterator<char>());
+        user_config_content = std::string((std::istreambuf_iterator<char>(user_config_file)), std::istreambuf_iterator<char>());
+        place_local_index_content = std::string((std::istreambuf_iterator<char>(place_local_index_file)), std::istreambuf_iterator<char>());
+        config::parse_ksv_string(system_config_content);
+        config::parse_ksv_string(user_config_content);
+        cds::load(place_cds_node, place_local_index_content);
+        if (cds::fetch(place_cds_node, {"place_name_index_list", config::get("bcf53b4b68691525f217aa8150dc6c6b")}) != "")
+        {
+            place_config_path = place_root / cds::fetch(place_cds_node, {"place_name_index_list", config::get("bcf53b4b68691525f217aa8150dc6c6b")}) / "place.cds";
+            std::ifstream place_config_file(place_config_path);
+            place_config_content = std::string((std::istreambuf_iterator<char>(place_config_file)), std::istreambuf_iterator<char>());
+            config::parse_ksv_string(place_config_content);
+        }
     }
 }

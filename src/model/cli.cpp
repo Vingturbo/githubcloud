@@ -117,10 +117,12 @@ namespace cli
                 if (util::resolve_value(config::get(_MAIN_OPT_ARG)) == "enable_config")
                 {
                     config::print_all();
-                }else if(util::resolve_value(config::get(_MAIN_OPT_ARG)).substr(0, 8) == "printopt"){
+                }
+                else if (util::resolve_value(config::get(_MAIN_OPT_ARG)).substr(0, 8) == "printopt")
+                {
                     std::string class_opt_use_temp_91de27d37ac04464d4f8fd53afd0c2bc = config::get("91de27d37ac04464d4f8fd53afd0c2bc", "@@no");
                     config::set("91de27d37ac04464d4f8fd53afd0c2bc", "@@yes");
-                    std::cerr<<util::resolve_value(config::get(_MAIN_OPT_ARG).substr(10))<<std::endl;
+                    std::cerr << util::resolve_value(config::get(_MAIN_OPT_ARG).substr(10)) << std::endl;
                     config::set("91de27d37ac04464d4f8fd53afd0c2bc", class_opt_use_temp_91de27d37ac04464d4f8fd53afd0c2bc);
                 }
             }
@@ -300,6 +302,9 @@ namespace cli
                 return;
         }
 
+        for (int i = 0; i < argc; i++)
+            util::debug_log("argv[" + std::to_string(i) + "]: [" + std::string(argv[i]) + "]");
+
         for (std::string i : options)
         {
             util::debug_log("Option: [" + i + "]");
@@ -345,7 +350,8 @@ namespace cli
             util::message_out("361aa96dff5d304d40317e2251140951");
             return;
         }
-        if(util::resolve_value(config::get(_OPT_CLASS))=="other"){
+        if (util::resolve_value(config::get(_OPT_CLASS)) == "other")
+        {
             opt_use.other_use();
         }
     }
