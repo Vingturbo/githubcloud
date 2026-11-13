@@ -164,9 +164,9 @@ namespace util
         config::parse_ksv_string(system_config_content);
         config::parse_ksv_string(user_config_content);
         cds::load(place_cds_node, place_local_index_content);
-        if (cds::fetch(place_cds_node, {"place_name_index_list", config::get("bcf53b4b68691525f217aa8150dc6c6b")}) != "")
+        if (cds::fetch(place_cds_node, {"place_name_index_list", resolve_value(config::get("bcf53b4b68691525f217aa8150dc6c6b"))}) == "enabled")
         {
-            place_config_path = place_root / cds::fetch(place_cds_node, {"place_name_index_list", config::get("bcf53b4b68691525f217aa8150dc6c6b")}) / "place.cds";
+            place_config_path = place_root / cds::fetch(place_cds_node, {"place_name_index_list", resolve_value(config::get("bcf53b4b68691525f217aa8150dc6c6b"))}) / "place.cds";
             std::ifstream place_config_file(place_config_path);
             place_config_content = std::string((std::istreambuf_iterator<char>(place_config_file)), std::istreambuf_iterator<char>());
             config::parse_ksv_string(place_config_content);
