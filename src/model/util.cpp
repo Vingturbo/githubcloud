@@ -103,7 +103,10 @@ namespace util
         std::cerr << util::resolve_value(config::get(message_id)) << std::endl;
     }
 
-    void load_online_config(const std::string &online_config_URL) {}
+    void load_online_config([[maybe_unused]] const std::string &online_config_URL)
+    {
+        // TODO: 实现 file:// / data: / http(s):// 加载
+    }
 
     void debug_log(const std::string &message)
     {

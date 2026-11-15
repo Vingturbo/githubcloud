@@ -105,7 +105,7 @@ namespace cli
     */
 
     std::vector<std::string> options_have;
-    int argeat = 0;
+    size_t argeat = 0;
 
     class OPT_USE
     {

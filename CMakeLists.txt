@@ -36,6 +36,9 @@ target_link_libraries(ghcd PRIVATE fltk)
 if(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel" OR CMAKE_BUILD_TYPE STREQUAL "Release")
 
     target_compile_options(ghcd PRIVATE
+        -Wall
+        -Wextra
+        -Werror
         -Os
         -ffunction-sections
         -fdata-sections
