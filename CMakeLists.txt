@@ -32,6 +32,8 @@ add_executable(ghcd ${SOURCES})
 # 5. 链接 FLTK
 target_link_libraries(ghcd PRIVATE fltk)
 
+target_compile_definitions(ghcd PRIVATE MG_TLS=MG_TLS_BUILTIN)
+
 # 6. 优化选项
 if(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel" OR CMAKE_BUILD_TYPE STREQUAL "Release")
 
